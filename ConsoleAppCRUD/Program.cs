@@ -22,19 +22,19 @@ namespace ConsoleAppCRUD
             //  EmailAddress = "johndoe@gmail.com"
             //});
 
+            userController.UpdateUser(222, new User()
+            {
+                Name = "Joe",
+                EmailAddress = "joe123@yachoo.com"
+            });
 
-            var users = GetAllUsers();
+            //userController.DeleteUser(8);
+
+            var users = userController.GetAllUsers();
             var allUsers = users.Select(u => $"{u.Name}, {u.EmailAddress}");
             foreach (var user in allUsers)
             {
                 Console.WriteLine(string.Join(", ", user));
-            }
-        }
-        public static IEnumerable<User> GetAllUsers()
-        {
-            using (var context = new ApplicationDbContext())
-            {
-                return context.Users.ToList();
             }
         }
     }
