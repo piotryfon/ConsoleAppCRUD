@@ -1,5 +1,6 @@
 ﻿using ConsoleAppCRUD.Context;
 using ConsoleAppCRUD.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,17 +17,18 @@ namespace ConsoleAppCRUD.Controllers
             _dbContext = dbContext;
         }
 
-        public void AddUser(User user)
+        public async Task AddUser(User user)
         {
-            var insertedUser = _dbContext.Add(user);
-            if (insertedUser != null)
-                _dbContext.SaveChanges();
+            _dbContext.Add(user);
+            
+            int newUser = await _dbContext.SaveChangesAsync();
+            if (newUser > 0)
                 Console.WriteLine("User added");
         }
 
-        public void EditUser(int id, User modifiedUser)
+        public async Task EditUser(int id, User modifiedUser)
         {
-            User user = _dbContext.Users.SingleOrDefault(d => d.Id == id);
+            User user = await _dbContext.Users.SingleOrDefaultAsync(d => d.Id == id);
             if(user == null)
             {
                 Console.WriteLine("User not found");
@@ -37,8 +39,8 @@ namespace ConsoleAppCRUD.Controllers
                 {
                     user.Name = modifiedUser.Name;
                     user.EmailAddress = modifiedUser.EmailAddress;
-                    int save = _dbContext.SaveChanges();
-                    if (save > 0)
+                    int editedUser = await _dbContext.SaveChangesAsync();
+                    if (editedUser > 0)
                         Console.WriteLine("User changed");
                 }
                 catch (Exception e)
@@ -46,12 +48,11 @@ namespace ConsoleAppCRUD.Controllers
                     Console.WriteLine(e.Message);
                 }
             }
-          
         }
 
-        public void DeleteUser(int id)
+        public async Task DeleteUser(int id)
         {
-            User user = _dbContext.Users.SingleOrDefault(u => u.Id == id);
+            User user = await _dbContext.Users.SingleOrDefaultAsync(u => u.Id == id);
 
             if (user == null)
                 Console.WriteLine("User not found.");
@@ -59,7 +60,7 @@ namespace ConsoleAppCRUD.Controllers
             try
             {
                 _dbContext.Remove(user);
-                int removeUser = _dbContext.SaveChanges();
+                int removeUser = await _dbContext.SaveChangesAsync();
                 if (removeUser > 0)
                     Console.WriteLine($"User {id} removed successfully");
             }
@@ -74,9 +75,9 @@ namespace ConsoleAppCRUD.Controllers
             return _dbContext.Users.ToList();
         }
 
-        public void GetUserById(int Id)
+        public async Task GetUserById(int Id)
         {
-            var userById = _dbContext.Users.FirstOrDefault(u => u.Id == Id);
+            var userById = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == Id);
 
             if(userById != default)
                 Console.WriteLine($"{userById.Name} {userById.EmailAddress}");
