@@ -1,23 +1,24 @@
 ﻿using ConsoleAppCRUD.Context;
 using ConsoleAppCRUD.Controllers;
 using ConsoleAppCRUD.Entities;
+using ConsoleAppCRUD.Services;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace ConsoleAppCRUD
 {
-    class Program   //Entityframeworkcore.sqlserver (5.0.13)
+    class Program //Entityframeworkcore.sqlserver (5.0.13)
     {
         static async Task Main(string[] args)
         {
             Console.WriteLine("CosoleApp CRUD");
 
-            SelectOperations();
-           
-            ApplicationDbContext dbContext = new ApplicationDbContext();
+            ApplicationDbContext context = new ApplicationDbContext();
+            IService service = new Service(context);
+            UserController userController = new UserController(service);
 
-            UserController userController = new UserController(dbContext);
+            SelectOperations();
 
             string value = Console.ReadLine();
             while (true)
